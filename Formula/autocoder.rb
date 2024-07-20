@@ -4,7 +4,7 @@ class Autocoder < Formula
   homepage "https://github.com/marcinsdance/autocoder"
   license "MIT"
   version "0.0.1"
-  url "https://github.com/marcinsdance/autocoder/archive/refs/tags/0.0.1.zip"
+  url "https://github.com/marcinsdance/autocoder/archive/refs/tags/0.0.1.tar.gz"
   sha256 "5d82208198645636f81b0d84313f38c52356d58cbe474e2a51fbf7d5c074cd8b"
   head "https://github.com/marcinsdance/autocoder.git", :branch => "master"
 
