@@ -11,7 +11,17 @@ class Autocoder < Formula
   depends_on "python@3.12"
 
   def install
-    prefix.install Dir["*"]
+    # Create a virtual environment in the prefix
+    venv = virtualenv_create(prefix, "python3")
+    
+    # Install the package and its dependencies into the virtual environment
+    venv.pip_install_and_link buildpath
+    
+    # Install the autocoder script
+    bin.install "autocoder"
+    
+    # Modify the shebang of the installed script to use the virtualenv python
+    inreplace bin/"autocoder", "#!/usr/bin/env python3", "#!#{venv.binary("python3")}"
   end
 
   def caveats
