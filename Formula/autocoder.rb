@@ -2,9 +2,9 @@ class Autocoder < Formula
   desc "Autocoder is a CLI utility for running autonomous projects programming on local environment"
   homepage "https://github.com/marcinsdance/autocoder"
   license "MIT"
-  version "0.0.4"
-  url "https://github.com/marcinsdance/autocoder/archive/refs/tags/v0.0.4.tar.gz"
-  sha256 "33b0046e049c077ac57880d0a8dcd9a46f686c865e25b15561106d02177b6d5c"
+  version "0.0.5"
+  url "https://github.com/marcinsdance/autocoder/archive/refs/tags/v0.0.5.tar.gz"
+  sha256 "10c990c19267ebfb39a8eb749728f0c1e4c27590431f673d9c2505ffac0dc888"
   head "https://github.com/marcinsdance/autocoder.git", :branch => "master"
 
   depends_on "python@3.12"
