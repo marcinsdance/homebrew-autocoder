@@ -3,23 +3,21 @@ class Autocoder < Formula
   desc "Autocoder is a CLI utility for running autonomous projects programming on local environment"
   homepage "https://github.com/marcinsdance/autocoder"
   license "MIT"
-  version "0.0.1"
-  url "https://github.com/marcinsdance/autocoder/archive/refs/tags/0.0.1.tar.gz"
-  sha256 "5d82208198645636f81b0d84313f38c52356d58cbe474e2a51fbf7d5c074cd8b"
+  version "0.0.3"
+  url "https://github.com/marcinsdance/autocoder/archive/refs/tags/v0.0.3.tar.gz"
+  sha256 "74c19f000898ec9b2941bafae505830eae5922c30151830e69bbbd66ef82b184"
   head "https://github.com/marcinsdance/autocoder.git", :branch => "master"
 
   depends_on "python@3.12"
 
+
   def install
-    # Create a virtual environment in the prefix
     venv = virtualenv_create(prefix, "python3")
-    
-    # Install the package and its dependencies into the virtual environment
     venv.pip_install_and_link buildpath
-    
-    # Install the autocoder script
-    bin.install "autocoder"
-    
+
+    # Install the main script from the correct location
+    bin.install "src/autocoder/autocoder.py" => "autocoder"
+
     # Modify the shebang of the installed script to use the virtualenv python
     inreplace bin/"autocoder", "#!/usr/bin/env python3", "#!#{venv.binary("python3")}"
   end
