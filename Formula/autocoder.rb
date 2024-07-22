@@ -1,4 +1,3 @@
-
 class Autocoder < Formula
   desc "Autocoder is a CLI utility for running autonomous projects programming on local environment"
   homepage "https://github.com/marcinsdance/autocoder"
@@ -10,16 +9,8 @@ class Autocoder < Formula
 
   depends_on "python@3.12"
 
-
   def install
-    venv = virtualenv_create(prefix, "python3")
-    venv.pip_install_and_link buildpath
-
-    # Install the main script from the correct location
-    bin.install "src/autocoder/autocoder.py" => "autocoder"
-
-    # Modify the shebang of the installed script to use the virtualenv python
-    inreplace bin/"autocoder", "#!/usr/bin/env python3", "#!#{venv.binary("python3")}"
+    virtualenv_install_with_resources
   end
 
   def caveats
