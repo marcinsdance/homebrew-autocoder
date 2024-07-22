@@ -35,7 +35,7 @@ class Autocoder < Formula
     sha256 "c13ce73c4764787e31f20854ebae505140ee5b750e8ba07c29e45969ce591c7b"
   end
 
-  resource "langgraph" do
+  resource "astor" do
     url "https://files.pythonhosted.org/packages/5a/21/75b771132fee241dfe601d39ade629548a9626d1d39f333fde31bc46febe/astor-0.8.1.tar.gz"
     sha256 "6a6effda93f4e1ce9f618779b2dd1d9d84f1e32812c23a29b3fff6fd7f63fa5e"
   end
