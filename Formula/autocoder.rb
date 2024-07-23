@@ -9,6 +9,7 @@ class Autocoder < Formula
   head "https://github.com/marcinsdance/autocoder.git", branch: "master"
 
   depends_on "python@3.12"
+  depends_on "rust" => :build
 
   resource "python-dotenv" do
     url "https://files.pythonhosted.org/packages/bc/57/e84d88dfe0aec03b7a2d4327012c1627ab5f03652216c63d49846d7a6c58/python-dotenv-1.0.1.tar.gz"
@@ -40,26 +41,59 @@ class Autocoder < Formula
     sha256 "6a6effda93f4e1ce9f618779b2dd1d9d84f1e32812c23a29b3fff6fd7f63fa5e"
   end
 
-  def install
-    virtualenv_install_with_resources
+  resource "typing_extensions" do
+    url "https://files.pythonhosted.org/packages/df/db/f35a00659bc03fec321ba8bce9420de607a1d37f8342eee1863174c69557/typing_extensions-4.12.2.tar.gz"
+    sha256 "1a7ead55c7e559dd4dee8856e3a88b41225abfe1ce8df57b7c13915fe121ffb8"
   end
 
-  def caveats
-    <<~EOS
-      Autocoder is an AI-powered coding assistant for automating programming tasks.
-      You will need to have an LLM like OpenAI or Claude API key to use Autocoder effectively.
-      To start using Autocoder, run:
-        autocoder init
-      This command will guide you through the initial setup, including entering your
-      OpenAI API key and configuring your preferences.
-      To get a list of available commands, run:
-        autocoder --help
-      For more detailed information on how to use Autocoder, please refer to the
-      documentation available at:
-      https://github.com/marcinsdance/autocoder/blob/master/README.md
-      If you encounter any issues or have questions, please visit the GitHub
-      repository at https://github.com/marcinsdance/autocoder for support.
+  resource "pydantic" do
+    url "https://files.pythonhosted.org/packages/8c/99/d0a5dca411e0a017762258013ba9905cd6e7baa9a3fd1fe8b6529472902e/pydantic-2.8.2.tar.gz"
+    sha256 "6f62c13d067b0755ad1c21a34bdd06c0c12625a22b0fc09c6b149816604f7c2a"
+  end
+
+  resource "annotated_types" do
+    url "https://files.pythonhosted.org/packages/ee/67/531ea369ba64dcff5ec9c3402f9f51bf748cec26dde048a2f973a4eea7f5/annotated_types-0.7.0.tar.gz"
+    sha256 "aff07c09a53a08bc8cfccb9c85b05f1aa9a2a6f23728d790723543408344ce89"
+  end
+
+  resource "pydantic_core" do
+    url "https://files.pythonhosted.org/packages/12/e3/0d5ad91211dba310f7ded335f4dad871172b9cc9ce204f5a56d76ccd6247/pydantic_core-2.20.1.tar.gz"
+    sha256 "26ca695eeee5f9f1aeeb211ffc12f10bcb6f71e2989988fda61dabd65db878d4"
+  end
+
+  def install
+    # Create a virtual environment in the libexec
+    venv = virtualenv_create(libexec, "python3.12")
+
+    # Use the pip from the Python installation that Homebrew provides
+    pip = Formula["python@3.12"].opt_bin/"pip3"
+
+    # Upgrade pip and install wheel
+    system pip, "install", "--upgrade", "pip"
+    system pip, "install", "wheel"
+
+    # Install all resources
+    resources.each do |r|
+      r.stage do
+        system pip, "install", "."
+      end
+    end
+
+    # Install the package itself
+    system pip, "install", "-v", "--ignore-installed", buildpath
+
+    # Create a wrapper script
+    (bin/"autocoder-wrapper").write <<~EOS
+      #!/bin/bash
+      export PYTHONPATH="#{libexec}/lib/python3.12/site-packages:$PYTHONPATH"
+      exec "#{libexec}/bin/python" "#{libexec}/bin/autocoder" "$@"
     EOS
+
+    # Make the wrapper script executable
+    chmod 0755, bin/"autocoder-wrapper"
+
+    # Create a symlink with the original name
+    bin.install_symlink "autocoder-wrapper" => "autocoder"
   end
 
   test do
